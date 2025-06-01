@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 
 // API v1 routes matching Express.js structure
 Route::prefix('v1')->group(function () {
-
     // Authentication routes with rate limiting
     Route::prefix('auth')->middleware('throttle:5,1')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);

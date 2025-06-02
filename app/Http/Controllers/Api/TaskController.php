@@ -7,7 +7,7 @@ use App\Models\Task;
 use App\Http\Resources\TaskResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Log;
 class TaskController extends Controller
 {
     /**
@@ -47,20 +47,21 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'date' => 'required|string',
+            'date' => 'required',
         ]);
-
+        Log::info("Request date: " . $request->date);
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Date is required'
             ], 400);
         }
+        Log::info("User ID: " . $request->user()->id);
 
         $tasks = Task::where('user_id', $request->user()->id)
             ->where('date', $request->date)
             ->get();
-
-        return response()->json(['tasks' => TaskResource::collection($tasks)]);
+        Log::info(json_encode(['tasks' => TaskResource::collection($tasks)]));
+        return response()->json(['tasks' => $tasks]);
     }
 
     /**
